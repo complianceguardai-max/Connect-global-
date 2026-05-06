@@ -3,159 +3,1396 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, useAnimation, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation, useReducedMotion } from 'framer-motion';
 import { 
-  ArrowRight, Settings, MapPin, DollarSign, Target, 
-  ShieldCheck, PlaneTakeoff, Zap, Server, Database,
-  Globe, Languages, Users, BarChart3
+  ArrowRight, 
+  Settings, 
+  MapPin, 
+  DollarSign, 
+  Target, 
+  ShieldCheck, 
+  PlaneTakeoff, 
+  Zap, 
+  Server, 
+  Database,
+  BarChart3,
+  Scale
 } from 'lucide-react';
 
-// -- 1. HEADER (ConnectGlobal Branding) --
-const Header = () => {
+/**
+ * A professional frontend engineer always abstracts complex components. 
+ * Due to the format, I am inlining them all in one file, but this would be a project
+ * structure with component files in app/components/.
+ */
+
+// -- COMPONENT 1: HEADER --
+// Replicates the top menu from the image, but adds user-specified links.
+const Header: React.FC = () => {
   const reducedMotion = useReducedMotion();
+
+  // Universal hover variants for navigation elements
+  const navItemVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.05,
+      transition: { type: 'spring', stiffness: 400, damping: 10 }
+    }
+  };
+
   const menuLinks = [
-    { name: "GLOBAL COMMERCE", href: "#" },
-    { name: "DECENTRALIZED FINANCE", href: "#" },
-    { name: "INTERNATIONAL TALENT", href: "#" },
-    { name: "RESOURCES", href: "#" }
+    { name: "HOME", href: "/" },
+    { name: "PLATFORM", href: "/platform" },
+    { name: "SOLUTIONS", href: "/solutions" },
+    { name: "RESOURCES", href: "/resources" },
+    { name: "ABOUT US", href: "/about-us" },
+    { name: "CONTACT", href: "/contact" }
   ];
 
   return (
     <motion.header 
-      className="fixed top-0 left-0 w-full z-50 bg-[#06070a]/80 backdrop-blur-md border-b border-white/5"
-      initial={{ y: -100 }} animate={{ y: 0 }}
+      className="fixed top-0 left-0 w-full z-50 bg-[#06070a]/90 backdrop-blur-sm border-b border-gray-800"
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between p-5 px-10">
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20">
-            <Globe size={22} className="text-white" />
-          </div>
-          <span className="font-black text-2xl tracking-tighter text-white uppercase">
-            Connect<span className="text-cyan-400">Global</span>
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between p-6 px-12">
+        {/* Brand Logo - Giving it a glowing text effect as seen in other elements */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <motion.div 
+            className="w-10 h-10 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(22,181,236,0.3)]"
+            whileHover={!reducedMotion ? { rotate: [0, 10, -10, 0], scale: 1.1 } : {}}
+          >
+            <ShieldCheck size={24} className="text-white" />
+          </motion.div>
+          <span className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">
+            Compliance<span className="text-gray-400 font-medium">Guard</span><span className="text-[#3478f2]">AI</span>
           </span>
         </Link>
         
-        <nav className="hidden lg:flex gap-8 text-[10px] font-black tracking-widest text-gray-400">
+        {/* User-specified Top Menu */}
+        <nav className="hidden md:flex gap-8 text-sm font-semibold tracking-wider text-gray-400">
           {menuLinks.map(link => (
-            <Link key={link.name} href={link.href} className="hover:text-cyan-400 transition-colors uppercase">{link.name}</Link>
+            <motion.div 
+              key={link.name} 
+              variants={navItemVariants} 
+              whileHover="hover" 
+              className="relative p-2"
+            >
+              <Link href={link.href} className="hover:text-white transition-colors">{link.name}</Link>
+              {/* Neon border glow effect on hover */}
+              <motion.div 
+                className="absolute inset-0 border border-transparent rounded-lg shadow-[0_0_10px_rgba(22,181,236,0)]"
+                whileHover={!reducedMotion ? {
+                  borderColor: '#16b5ec',
+                  boxShadow: '0 0 15px 4px rgba(22,181,236,0.5)',
+                  transition: { duration: 0.2 }
+                } : {}}
+              />
+            </motion.div>
           ))}
         </nav>
 
-        <button className="px-6 py-2.5 bg-cyan-500 text-black font-black text-[10px] uppercase tracking-widest rounded-full hover:bg-white transition-all">
-          Start Global Journey
-        </button>
+        {/* Primary CTA button with universal hover glow and icon jiggle */}
+        <motion.button 
+          className="group relative px-8 py-3 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] text-white rounded-full text-sm font-bold flex items-center gap-2"
+          whileHover={!reducedMotion ? { 
+            scale: 1.05, 
+            boxShadow: '0 0 20px 8px rgba(52,120,242,0.6)',
+          } : { scale: 1.05 }}
+        >
+          <span>Get Started</span>
+          <motion.div whileHover={!reducedMotion ? { rotate: [0, 15, -15, 0], scale: 1.1 } : {}}>
+             <Settings size={18} className="text-white" />
+          </motion.div>
+        </motion.button>
       </div>
     </motion.header>
   );
-};
+}
 
-// -- 2. INTERACTIVE GLOBE BACKGROUND --
-const GlobeBackground = () => {
+// -- COMPONENT 2: INTERACTIVE GLOBE BACKGROUND --
+// Replicates the global network, making dots "ping" brighter based on mouse proximity.
+const GlobeBackground: React.FC = () => {
   const globeRef = useRef<HTMLDivElement>(null);
-  const numDots = 80;
-  const dots = Array.from({ length: numDots }).map((_, i) => ({
-    x: Math.random() * 100, y: Math.random() * 100, size: Math.random() * 3 + 1
+  const reducedMotion = useReducedMotion();
+
+  // Defines a grid of points over the globe image to make them interactive.
+  const numDots = 100;
+  const dots = Array.from({ length: numDots }).map((_, index) => ({
+    x: (index % 10) * 10 + 5, // grid coords 0-100
+    y: Math.floor(index / 10) * 10 + 5,
+    size: 4 + (Math.random() * 4), // varied base sizes
   }));
+
+  const controls = useAnimation();
 
   useEffect(() => {
     const globeDiv = globeRef.current;
-    if (!globeDiv) return;
+    if (!globeDiv || reducedMotion) return;
+
+    // Standard Framer Motion animate function is difficult to coordinate across so many components
+    // for a high-performance interactive effect. We use direct DOM manipulation for maximum speed
+    // and smoothness for a professional engineering touch.
     const dotsDivs = Array.from(globeDiv.children) as HTMLDivElement[];
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (event: MouseEvent) => {
       const rect = globeDiv.getBoundingClientRect();
-      dotsDivs.forEach((dot, i) => {
-        const dotX = (rect.width * dots[i].x) / 100;
-        const dotY = (rect.height * dots[i].y) / 100;
-        const dist = Math.sqrt(Math.pow(e.clientX - rect.left - dotX, 2) + Math.pow(e.clientY - rect.top - dotY, 2));
-        const proximity = Math.max(0, 200 - dist) / 200;
-        dot.style.transform = `scale(${1 + proximity * 3})`;
-        dot.style.opacity = `${0.2 + proximity * 0.8}`;
-        dot.style.boxShadow = `0 0 ${15 * proximity}px rgba(34,211,238,${proximity})`;
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      dotsDivs.forEach((dot, index) => {
+        const dotData = dots[index];
+        const dotX = (rect.width * dotData.x / 100);
+        const dotY = (rect.height * dotData.y / 100);
+
+        const dx = mouseX - dotX;
+        const dy = mouseY - dotY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Calculate a brightness/scale effect based on proximity to mouse
+        const proximity = Math.max(0, 150 - dist) / 150; // max effect within 150px
+        const scaleEffect = 1 + (proximity * 2); // max 3x base size
+        const glowOpacity = 0.2 + (proximity * 0.8); // max fully opaque glow
+
+        dot.style.transform = `scale(${scaleEffect})`;
+        dot.style.boxShadow = `0 0 15px ${10 * proximity}px rgba(22,181,236,${glowOpacity})`;
+        dot.style.opacity = `${glowOpacity}`;
       });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [dots]);
+    const handleMouseLeave = () => {
+        dotsDivs.forEach((dot, index) => {
+            const dotData = dots[index];
+            dot.style.transform = `scale(1)`;
+            dot.style.boxShadow = `0 0 5px rgba(22,181,236,0.3)`;
+            dot.style.opacity = `0.3`;
+          });
+    };
+
+    globeDiv.addEventListener('mousemove', handleMouseMove);
+    globeDiv.addEventListener('mouseleave', handleMouseLeave);
+    
+    return () => {
+        globeDiv.removeEventListener('mousemove', handleMouseMove);
+        globeDiv.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [dots, reducedMotion]);
 
   return (
-    <div className="absolute inset-0 overflow-hidden -z-10 bg-[#050608]">
-      <div ref={globeRef} className="relative w-full h-full opacity-40">
-        {dots.map((dot, i) => (
-          <div key={i} className="absolute bg-cyan-400 rounded-full transition-all duration-300"
-               style={{ left: `${dot.x}%`, top: `${dot.y}%`, width: dot.size, height: dot.size }} />
-        ))}
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050608]/50 to-[#050608]" />
-    </div>
-  );
-};
-
-// -- 3. FEATURE CARD (Bento Grid) --
-const FeatureCard = ({ title, desc, icon: Icon, href }: any) => (
-  <motion.div 
-    whileHover={{ y: -10, scale: 1.02 }}
-    className="group relative p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 backdrop-blur-3xl overflow-hidden"
-  >
-    <div className="absolute inset-0 border-2 border-transparent group-hover:border-cyan-500/50 rounded-[2.5rem] transition-all" />
-    <div className="relative z-10 space-y-6">
-      <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-black transition-all">
-        <Icon size={28} />
-      </div>
-      <div>
-        <h3 className="text-xl font-black uppercase tracking-tight text-white mb-2">{title}</h3>
-        <p className="text-gray-500 text-xs font-bold leading-relaxed">{desc}</p>
-      </div>
-      <Link href={href} className="inline-flex items-center gap-2 text-cyan-400 text-[10px] font-black uppercase tracking-widest group-hover:gap-4 transition-all">
-        Learn More <ArrowRight size={14} />
-      </Link>
-    </div>
-  </motion.div>
-);
-
-// -- MAIN PAGE --
-export default function HomePage() {
-  return (
-    <div className="min-h-screen bg-[#050608] text-white selection:bg-cyan-500/30">
-      <Header />
-      <GlobeBackground />
-
-      <main className="relative z-10 pt-44 pb-32 px-6">
-        <div className="max-w-5xl mx-auto text-center mb-32">
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-cyan-400 text-[10px] font-black uppercase tracking-[0.3em] mb-10"
-          >
-            <Languages size={14} /> Unified Global Interface Active
-          </motion.div>
-          <motion.h1 
-            className="text-7xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase mb-8"
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          >
-            Global Access. <br />
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">One Interface.</span>
-          </motion.h1>
-          <p className="max-w-2xl mx-auto text-gray-400 text-lg font-light mb-12">
-            Unified cross-border services, resources, and commerce for everyone, everywhere. 
-            Experience the future of digital sovereignty.
-          </p>
-          <button className="px-12 py-5 bg-white text-black font-black rounded-2xl text-xs uppercase tracking-[0.2em] hover:scale-105 transition-all shadow-2xl">
-            Connect Now
-          </button>
+    <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center -z-10 bg-[#06070a]">
+        {/* Globe image as seen in the image - represent it with a base and overlay nodes */}
+        <div className="relative w-[120%] h-[120%] -translate-y-[10%] p-[10%]">
+            <Image 
+                src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000" // A suitable dark tech globe background
+                alt="Global Network"
+                fill
+                className="object-cover opacity-5"
+            />
+            
+            {/* Superimposed interactive nodes/dots */}
+            <div ref={globeRef} className="relative w-full h-full">
+                {dots.map((dot, index) => (
+                    <div 
+                        key={index}
+                        className="absolute bg-[#16b5ec] rounded-full opacity-30 shadow-[0_0_10px_rgba(22,181,236,0.3)] transition-all duration-100 ease-linear"
+                        style={{
+                            left: `${dot.x}%`,
+                            top: `${dot.y}%`,
+                            width: `${dot.size}px`,
+                            height: `${dot.size}px`,
+                        }}
+                    />
+                ))}
+            </div>
+            
+            {/* Background elements like the airplane and pin from image */}
+            <div className="absolute top-[30%] left-[20%] text-gray-500 opacity-20">
+                <PlaneTakeoff size={48} />
+            </div>
+            <div className="absolute top-[70%] left-[60%] text-gray-500 opacity-20">
+                <MapPin size={64} />
+            </div>
         </div>
-
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
-          <FeatureCard title="Unified Network" desc="A glowing network hub for global connectivity." icon={Globe} href="#" />
-          <FeatureCard title="Secure Payments" desc="Institutional-grade encryption for finance." icon={DollarSign} href="#" />
-          <FeatureCard title="Access Markets" desc="Open doors to international talent and commerce." icon={Users} href="#" />
-          <FeatureCard title="Real-time Stats" desc="Live data synchronization across 195+ countries." icon={BarChart3} href="#" />
-        </div>
-      </main>
-
-      <footer className="py-10 border-t border-white/5 text-center text-[10px] text-gray-600 font-bold uppercase tracking-[0.4em]">
-        ConnectGlobal AI — 2026 Digital Sovereignty Protocol
-      </footer>
     </div>
   );
 }
+
+// -- COMPONENT 3: FEATURE CARD (Bento Grid Item) --
+// Dynamic component that handles visual replication and specific hover jiggles.
+interface FeatureCardProps {
+    title: string;
+    diagram: React.ReactNode;
+    content?: React.ReactNode;
+    href: string;
+    iconHoverAnimation?: 'shake' | 'rotate' | 'jiggle';
+    gridArea?: string;
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, diagram, content, href, iconHoverAnimation = 'rotate', gridArea }) => {
+    const reducedMotion = useReducedMotion();
+
+    const hoverVariants = {
+        shake: { rotate: [0, 10, -10, 0], transition: { duration: 0.3 } },
+        rotate: { rotate: [0, 45, -45, 0], transition: { duration: 0.3 } },
+        jiggle: { scale: [1, 1.1, 0.9, 1], transition: { duration: 0.3 } },
+    };
+
+    return (
+        <motion.div 
+            className="group relative p-8 rounded-[3rem] bg-[#111216]/50 backdrop-blur-xl border border-gray-800 shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] overflow-hidden"
+            style={{ gridArea }}
+            whileHover={!reducedMotion ? { scale: 1.03, } : {}}
+        >
+            {/* Glowing neon border overlay, visible on hover */}
+            <motion.div 
+                className="absolute inset-0 border-2 border-transparent rounded-[3rem] shadow-[0_0_20px_4px_rgba(22,181,236,0)] z-10"
+                whileHover={!reducedMotion ? {
+                    borderColor: '#16b5ec',
+                    boxShadow: '0 0 25px 8px rgba(22,181,236,0.6)',
+                    transition: { duration: 0.2 }
+                } : { borderColor: '#16b5ec' }}
+            />
+
+            <Link href={href} className="absolute inset-0 z-20"></Link>
+
+            {/* Title and Icon shake logic */}
+            <div className="relative z-30 flex items-center justify-between gap-4 mb-6">
+                <h3 className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">{title}</h3>
+                <motion.div 
+                    className="p-3 bg-gray-800/60 rounded-full text-[#3478f2]"
+                    whileHover={!reducedMotion && iconHoverAnimation ? hoverVariants[iconHoverAnimation] : {}}
+                >
+                    {/* Placeholder for specific icon - defined in HomePage */}
+                    <Zap size={20} />
+                </motion.div>
+            </div>
+
+            {/* Replicated diagram content */}
+            <div className="relative z-30 space-y-4 text-sm text-gray-400 font-medium leading-relaxed">
+                <div className="w-full aspect-[2/1] rounded-2xl bg-[#0a0b0d] p-4 flex items-center justify-center border border-gray-800/50">
+                    {diagram}
+                </div>
+                {content}
+            </div>
+            
+            {/* Card corner link arrows from image */}
+            <div className="absolute bottom-8 right-8 z-30 text-gray-700 opacity-50 group-hover:text-[#3478f2] group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowRight size={24} />
+            </div>
+        </motion.div>
+    );
+};
+
+
+// -- PAGE: HOMEPAGE (`app/page.tsx`) --
+export default function HomePage() {
+  const reducedMotion = useReducedMotion();
+
+  const pageTransitionVariants = {
+    initial: { opacity: 0, y: 50 },
+    animate: { 
+        opacity: 1, 
+        y: 0, 
+        transition: { delay: 0.4, staggerChildren: 0.1, delayChildren: 0.6 } 
+    }
+  };
+
+  // Content for features based on user input
+  const features = [
+    {
+      title: "Unified Global Network",
+      href: "/platform/network",
+      icon: Target,
+      iconHoverAnimation: 'shake',
+      gridArea: 'network',
+      diagram: (
+          // Simplified replication of network diagram
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec]/70 gap-3">
+              <Zap size={32}/>
+              <ArrowRight size={24}/>
+              <Globe size={48} className="text-[#3478f2]"/>
+              <div className="text-gray-600 text-xs text-center font-bold tracking-wider">SECURE DATA FLOWS</div>
+          </div>
+      )
+    },
+    {
+      title: "Secure Payments",
+      href: "/platform/payments",
+      icon: DollarSign,
+      iconHoverAnimation: 'jiggle',
+      gridArea: 'payments',
+      diagram: (
+           // Money diagram replication
+           <div className="w-full h-full flex items-center justify-center text-[#16b5ec] gap-4">
+              <div className="w-16 h-16 rounded-full bg-[#16b5ec]/10 border border-[#16b5ec]/30 flex items-center justify-center">
+                <DollarSign size={36}/>
+              </div>
+              <ArrowRight size={24} className="text-gray-700"/>
+              <div className="w-16 h-16 rounded-full bg-[#3478f2]/10 border border-[#3478f2]/30 flex items-center justify-center text-[#3478f2]">
+                <ShieldCheck size={36}/>
+              </div>
+          </div>
+      )
+    },
+    {
+      title: "Automated Compliance",
+      href: "/platform/automated-compliance",
+      icon: ShieldCheck,
+      gridArea: 'compliance', // Card is column tall
+      diagram: (
+          // Compliance list diagram as seen in the image text
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec] gap-3">
+              <Server size={40}/>
+              <div className="text-gray-600 text-xs font-bold tracking-wider">AI ACT AUDIT LOG</div>
+              <div className="flex gap-2">
+                <Database size={24}/>```tsx
+"use client";
+
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { motion, AnimatePresence, useAnimation, useReducedMotion } from 'framer-motion';
+import { 
+  ArrowRight, 
+  Settings, 
+  MapPin, 
+  DollarSign, 
+  Target, 
+  ShieldCheck, 
+  PlaneTakeoff, 
+  Zap, 
+  Server, 
+  Database,
+  BarChart3,
+  Scale,
+  Globe
+} from 'lucide-react';
+
+/**
+ * A professional frontend engineer always abstracts complex components. 
+ * Due to the format, I am inlining them all in one file, but this would be a project
+ * structure with component files in app/components/.
+ */
+
+// -- COMPONENT 1: HEADER --
+// Replicates the top menu from the image, but adds user-specified links.
+const Header: React.FC = () => {
+  const reducedMotion = useReducedMotion();
+
+  // Universal hover variants for navigation elements
+  const navItemVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.05,
+      transition: { type: 'spring', stiffness: 400, damping: 10 }
+    }
+  };
+
+  const menuLinks = [
+    { name: "HOME", href: "/" },
+    { name: "PLATFORM", href: "/platform" },
+    { name: "SOLUTIONS", href: "/solutions" },
+    { name: "RESOURCES", href: "/resources" },
+    { name: "ABOUT US", href: "/about-us" },
+    { name: "CONTACT", href: "/contact" }
+  ];
+
+  return (
+    <motion.header 
+      className="fixed top-0 left-0 w-full z-50 bg-[#06070a]/90 backdrop-blur-sm border-b border-gray-800"
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
+    >
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between p-6 px-12">
+        {/* Brand Logo - Giving it a glowing text effect as seen in other elements */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <motion.div 
+            className="w-10 h-10 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(22,181,236,0.3)]"
+            whileHover={!reducedMotion ? { rotate: [0, 10, -10, 0], scale: 1.1 } : {}}
+          >
+            <ShieldCheck size={24} className="text-white" />
+          </motion.div>
+          <span className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">
+            Compliance<span className="text-gray-400 font-medium">Guard</span><span className="text-[#3478f2]">AI</span>
+          </span>
+        </Link>
+        
+        {/* User-specified Top Menu */}
+        <nav className="hidden md:flex gap-8 text-sm font-semibold tracking-wider text-gray-400">
+          {menuLinks.map(link => (
+            <motion.div 
+              key={link.name} 
+              variants={navItemVariants} 
+              whileHover="hover" 
+              className="relative p-2"
+            >
+              <Link href={link.href} className="hover:text-white transition-colors">{link.name}</Link>
+              {/* Neon border glow effect on hover */}
+              <motion.div 
+                className="absolute inset-0 border border-transparent rounded-lg shadow-[0_0_10px_rgba(22,181,236,0)]"
+                whileHover={!reducedMotion ? {
+                  borderColor: '#16b5ec',
+                  boxShadow: '0 0 15px 4px rgba(22,181,236,0.5)',
+                  transition: { duration: 0.2 }
+                } : {}}
+              />
+            </motion.div>
+          ))}
+        </nav>
+
+        {/* Primary CTA button with universal hover glow and icon jiggle */}
+        <motion.button 
+          className="group relative px-8 py-3 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] text-white rounded-full text-sm font-bold flex items-center gap-2"
+          whileHover={!reducedMotion ? { 
+            scale: 1.05, 
+            boxShadow: '0 0 20px 8px rgba(52,120,242,0.6)',
+          } : { scale: 1.05 }}
+        >
+          <span>Get Started</span>
+          <motion.div whileHover={!reducedMotion ? { rotate: [0, 15, -15, 0], scale: 1.1 } : {}}>
+             <Settings size={18} className="text-white" />
+          </motion.div>
+        </motion.button>
+      </div>
+    </motion.header>
+  );
+}
+
+// -- COMPONENT 2: INTERACTIVE GLOBE BACKGROUND --
+// Replicates the global network, making dots "ping" brighter based on mouse proximity.
+const GlobeBackground: React.FC = () => {
+  const globeRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  // Defines a grid of points over the globe image to make them interactive.
+  const numDots = 100;
+  const dots = Array.from({ length: numDots }).map((_, index) => ({
+    x: (index % 10) * 10 + 5, // grid coords 0-100
+    y: Math.floor(index / 10) * 10 + 5,
+    size: 4 + (Math.random() * 4), // varied base sizes
+  }));
+
+  const controls = useAnimation();
+
+  useEffect(() => {
+    const globeDiv = globeRef.current;
+    if (!globeDiv || reducedMotion) return;
+
+    // Standard Framer Motion animate function is difficult to coordinate across so many components
+    // for a high-performance interactive effect. We use direct DOM manipulation for maximum speed
+    // and smoothness for a professional engineering touch.
+    const dotsDivs = Array.from(globeDiv.children) as HTMLDivElement[];
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = globeDiv.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      dotsDivs.forEach((dot, index) => {
+        const dotData = dots[index];
+        const dotX = (rect.width * dotData.x / 100);
+        const dotY = (rect.height * dotData.y / 100);
+
+        const dx = mouseX - dotX;
+        const dy = mouseY - dotY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Calculate a brightness/scale effect based on proximity to mouse
+        const proximity = Math.max(0, 150 - dist) / 150; // max effect within 150px
+        const scaleEffect = 1 + (proximity * 2); // max 3x base size
+        const glowOpacity = 0.2 + (proximity * 0.8); // max fully opaque glow
+
+        dot.style.transform = `scale(${scaleEffect})`;
+        dot.style.boxShadow = `0 0 15px ${10 * proximity}px rgba(22,181,236,${glowOpacity})`;
+        dot.style.opacity = `${glowOpacity}`;
+      });
+    };
+
+    const handleMouseLeave = () => {
+        dotsDivs.forEach((dot, index) => {
+            const dotData = dots[index];
+            dot.style.transform = `scale(1)`;
+            dot.style.boxShadow = `0 0 5px rgba(22,181,236,0.3)`;
+            dot.style.opacity = `0.3`;
+          });
+    };
+
+    globeDiv.addEventListener('mousemove', handleMouseMove);
+    globeDiv.addEventListener('mouseleave', handleMouseLeave);
+    
+    return () => {
+        globeDiv.removeEventListener('mousemove', handleMouseMove);
+        globeDiv.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [dots, reducedMotion]);
+
+  return (
+    <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center -z-10 bg-[#06070a]">
+        {/* Globe image as seen in the image - represent it with a base and overlay nodes */}
+        <div className="relative w-[120%] h-[120%] -translate-y-[10%] p-[10%]">
+            <Image 
+                src="[https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000](https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000)" // A suitable dark tech globe background
+                alt="Global Network"
+                fill
+                className="object-cover opacity-5"
+            />
+            
+            {/* Superimposed interactive nodes/dots */}
+            <div ref={globeRef} className="relative w-full h-full">
+                {dots.map((dot, index) => (
+                    <div 
+                        key={index}
+                        className="absolute bg-[#16b5ec] rounded-full opacity-30 shadow-[0_0_10px_rgba(22,181,236,0.3)] transition-all duration-100 ease-linear"
+                        style={{
+                            left: `${dot.x}%`,
+                            top: `${dot.y}%`,
+                            width: `${dot.size}px`,
+                            height: `${dot.size}px`,
+                        }}
+                    />
+                ))}
+            </div>
+            
+            {/* Background elements like the airplane and pin from image */}
+            <div className="absolute top-[30%] left-[20%] text-gray-500 opacity-20">
+                <PlaneTakeoff size={48} />
+            </div>
+            <div className="absolute top-[70%] left-[60%] text-gray-500 opacity-20">
+                <MapPin size={64} />
+            </div>
+        </div>
+    </div>
+  );
+}
+
+// -- COMPONENT 3: FEATURE CARD (Bento Grid Item) --
+// Dynamic component that handles visual replication and specific hover jiggles.
+interface FeatureCardProps {
+    title: string;
+    diagram: React.ReactNode;
+    content?: React.ReactNode;
+    href: string;
+    iconHoverAnimation?: 'shake' | 'rotate' | 'jiggle';
+    gridArea?: string;
+    Icon: React.ElementType; // Icon passed as component
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, diagram, content, href, Icon, iconHoverAnimation = 'rotate', gridArea }) => {
+    const reducedMotion = useReducedMotion();
+
+    const hoverVariants = {
+        shake: { rotate: [0, 10, -10, 0], transition: { duration: 0.3 } },
+        rotate: { rotate: [0, 45, -45, 0], transition: { duration: 0.3 } },
+        jiggle: { scale: [1, 1.1, 0.9, 1], transition: { duration: 0.3 } },
+    };
+
+    return (
+        <motion.div 
+            className="group relative p-8 rounded-[3rem] bg-[#111216]/50 backdrop-blur-xl border border-gray-800 shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] overflow-hidden"
+            style={{ gridArea }}
+            whileHover={!reducedMotion ? { scale: 1.03, } : {}}
+        >
+            {/* Glowing neon border overlay, visible on hover */}
+            <motion.div 
+                className="absolute inset-0 border-2 border-transparent rounded-[3rem] shadow-[0_0_20px_4px_rgba(22,181,236,0)] z-10"
+                whileHover={!reducedMotion ? {
+                    borderColor: '#16b5ec',
+                    boxShadow: '0 0 25px 8px rgba(22,181,236,0.6)',
+                    transition: { duration: 0.2 }
+                } : { borderColor: '#16b5ec' }}
+            />
+
+            <Link href={href} className="absolute inset-0 z-20"></Link>
+
+            {/* Title and Icon shake logic */}
+            <div className="relative z-30 flex items-center justify-between gap-4 mb-6">
+                <h3 className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">{title}</h3>
+                <motion.div 
+                    className="p-3 bg-gray-800/60 rounded-full text-[#3478f2]"
+                    whileHover={!reducedMotion && iconHoverAnimation ? hoverVariants[iconHoverAnimation] : {}}
+                >
+                    <Icon size={20} />
+                </motion.div>
+            </div>
+
+            {/* Replicated diagram content */}
+            <div className="relative z-30 space-y-4 text-sm text-gray-400 font-medium leading-relaxed">
+                <div className="w-full aspect-[2/1] rounded-2xl bg-[#0a0b0d] p-4 flex items-center justify-center border border-gray-800/50">
+                    {diagram}
+                </div>
+                {content}
+            </div>
+            
+            {/* Card corner link arrows from image */}
+            <div className="absolute bottom-8 right-8 z-30 text-gray-700 opacity-50 group-hover:text-[#3478f2] group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowRight size={24} />
+            </div>
+        </motion.div>
+    );
+};
+
+
+// -- PAGE: HOMEPAGE (`app/page.tsx`) --
+export default function HomePage() {
+  const reducedMotion = useReducedMotion();
+
+  const pageTransitionVariants = {
+    initial: { opacity: 0, y: 50 },
+    animate: { 
+        opacity: 1, 
+        y: 0, 
+        transition: { delay: 0.4, staggerChildren: 0.1, delayChildren: 0.6 } 
+    }
+  };
+
+  // Content for features based on user input
+  const features = [
+    {
+      title: "Unified Global Network",
+      href: "/platform/network",
+      Icon: Target,
+      iconHoverAnimation: 'shake' as const,
+      gridArea: 'network',
+      diagram: (
+          // Simplified replication of network diagram
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec]/70 gap-3">
+              <Zap size={32}/>
+              <ArrowRight size={24}/>
+              <Globe size={48} className="text-[#3478f2]"/>
+              <div className="text-gray-600 text-xs text-center font-bold tracking-wider">SECURE DATA FLOWS</div>
+          </div>
+      )
+    },
+    {
+      title: "Secure Payments",
+      href: "/platform/payments",
+      Icon: DollarSign,
+      iconHoverAnimation: 'jiggle' as const,
+      gridArea: 'payments',
+      diagram: (
+           // Money diagram replication
+           <div className="w-full h-full flex items-center justify-center text-[#16b5ec] gap-4">
+              <div className="w-16 h-16 rounded-full bg-[#16b5ec]/10 border border-[#16b5ec]/30 flex items-center justify-center">
+                <DollarSign size={36}/>
+              </div>
+              <ArrowRight size={24} className="text-gray-700"/>
+              <div className="w-16 h-16 rounded-full bg-[#3478f2]/10 border border-[#3478f2]/30 flex items-center justify-center text-[#3478f2]">
+                <ShieldCheck size={36}/>
+              </div>
+          </div>
+      )
+    },
+    {
+      title: "Automated Compliance",
+      href: "/platform/automated-compliance",
+      Icon: ShieldCheck,
+      iconHoverAnimation: 'rotate' as const,
+      gridArea: 'compliance', // Card is column tall
+      diagram: (
+          // Compliance list diagram as seen in the image text
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec] gap-3">
+              <Server size={40}/>
+              <div className="text-gray-600 text-xs font-bold tracking-wider">AI ACT AUDIT LOG</div>
+              <div className="flex gap-2">
+                <Database size={24}/>```tsx
+"use client";
+
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { motion, AnimatePresence, useAnimation, useReducedMotion } from 'framer-motion';
+import { 
+  ArrowRight, 
+  Settings, 
+  MapPin, 
+  DollarSign, 
+  Target, 
+  ShieldCheck, 
+  PlaneTakeoff, 
+  Zap, 
+  Server, 
+  Database,
+  BarChart3,
+  Scale,
+  Globe
+} from 'lucide-react';
+
+/**
+ * A professional frontend engineer always abstracts complex components. 
+ * Due to the format, I am inlining them all in one file, but this would be a project
+ * structure with component files in app/components/.
+ */
+
+// -- COMPONENT 1: HEADER --
+// Replicates the top menu from the image, but adds user-specified links.
+const Header: React.FC = () => {
+  const reducedMotion = useReducedMotion();
+
+  // Universal hover variants for navigation elements
+  const navItemVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.05,
+      transition: { type: 'spring', stiffness: 400, damping: 10 }
+    }
+  };
+
+  const menuLinks = [
+    { name: "HOME", href: "/" },
+    { name: "PLATFORM", href: "/platform" },
+    { name: "SOLUTIONS", href: "/solutions" },
+    { name: "RESOURCES", href: "/resources" },
+    { name: "ABOUT US", href: "/about-us" },
+    { name: "CONTACT", href: "/contact" }
+  ];
+
+  return (
+    <motion.header 
+      className="fixed top-0 left-0 w-full z-50 bg-[#06070a]/90 backdrop-blur-sm border-b border-gray-800"
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
+    >
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between p-6 px-12">
+        {/* Brand Logo - Giving it a glowing text effect as seen in other elements */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <motion.div 
+            className="w-10 h-10 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(22,181,236,0.3)]"
+            whileHover={!reducedMotion ? { rotate: [0, 10, -10, 0], scale: 1.1 } : {}}
+          >
+            <ShieldCheck size={24} className="text-white" />
+          </motion.div>
+          <span className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">
+            Compliance<span className="text-gray-400 font-medium">Guard</span><span className="text-[#3478f2]">AI</span>
+          </span>
+        </Link>
+        
+        {/* User-specified Top Menu */}
+        <nav className="hidden md:flex gap-8 text-sm font-semibold tracking-wider text-gray-400">
+          {menuLinks.map(link => (
+            <motion.div 
+              key={link.name} 
+              variants={navItemVariants} 
+              whileHover="hover" 
+              className="relative p-2"
+            >
+              <Link href={link.href} className="hover:text-white transition-colors">{link.name}</Link>
+              {/* Neon border glow effect on hover */}
+              <motion.div 
+                className="absolute inset-0 border border-transparent rounded-lg shadow-[0_0_10px_rgba(22,181,236,0)]"
+                whileHover={!reducedMotion ? {
+                  borderColor: '#16b5ec',
+                  boxShadow: '0 0 15px 4px rgba(22,181,236,0.5)',
+                  transition: { duration: 0.2 }
+                } : {}}
+              />
+            </motion.div>
+          ))}
+        </nav>
+
+        {/* Primary CTA button with universal hover glow and icon jiggle */}
+        <motion.button 
+          className="group relative px-8 py-3 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] text-white rounded-full text-sm font-bold flex items-center gap-2"
+          whileHover={!reducedMotion ? { 
+            scale: 1.05, 
+            boxShadow: '0 0 20px 8px rgba(52,120,242,0.6)',
+          } : { scale: 1.05 }}
+        >
+          <span>Get Started</span>
+          <motion.div whileHover={!reducedMotion ? { rotate: [0, 15, -15, 0], scale: 1.1 } : {}}>
+             <Settings size={18} className="text-white" />
+          </motion.div>
+        </motion.button>
+      </div>
+    </motion.header>
+  );
+}
+
+// -- COMPONENT 2: INTERACTIVE GLOBE BACKGROUND --
+// Replicates the global network, making dots "ping" brighter based on mouse proximity.
+const GlobeBackground: React.FC = () => {
+  const globeRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  // Defines a grid of points over the globe image to make them interactive.
+  const numDots = 100;
+  const dots = Array.from({ length: numDots }).map((_, index) => ({
+    x: (index % 10) * 10 + 5, // grid coords 0-100
+    y: Math.floor(index / 10) * 10 + 5,
+    size: 4 + (Math.random() * 4), // varied base sizes
+  }));
+
+  const controls = useAnimation();
+
+  useEffect(() => {
+    const globeDiv = globeRef.current;
+    if (!globeDiv || reducedMotion) return;
+
+    // Standard Framer Motion animate function is difficult to coordinate across so many components
+    // for a high-performance interactive effect. We use direct DOM manipulation for maximum speed
+    // and smoothness for a professional engineering touch.
+    const dotsDivs = Array.from(globeDiv.children) as HTMLDivElement[];
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = globeDiv.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      dotsDivs.forEach((dot, index) => {
+        const dotData = dots[index];
+        const dotX = (rect.width * dotData.x / 100);
+        const dotY = (rect.height * dotData.y / 100);
+
+        const dx = mouseX - dotX;
+        const dy = mouseY - dotY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Calculate a brightness/scale effect based on proximity to mouse
+        const proximity = Math.max(0, 150 - dist) / 150; // max effect within 150px
+        const scaleEffect = 1 + (proximity * 2); // max 3x base size
+        const glowOpacity = 0.2 + (proximity * 0.8); // max fully opaque glow
+
+        dot.style.transform = `scale(${scaleEffect})`;
+        dot.style.boxShadow = `0 0 15px ${10 * proximity}px rgba(22,181,236,${glowOpacity})`;
+        dot.style.opacity = `${glowOpacity}`;
+      });
+    };
+
+    const handleMouseLeave = () => {
+        dotsDivs.forEach((dot, index) => {
+            const dotData = dots[index];
+            dot.style.transform = `scale(1)`;
+            dot.style.boxShadow = `0 0 5px rgba(22,181,236,0.3)`;
+            dot.style.opacity = `0.3`;
+          });
+    };
+
+    globeDiv.addEventListener('mousemove', handleMouseMove);
+    globeDiv.addEventListener('mouseleave', handleMouseLeave);
+    
+    return () => {
+        globeDiv.removeEventListener('mousemove', handleMouseMove);
+        globeDiv.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [dots, reducedMotion]);
+
+  return (
+    <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center -z-10 bg-[#06070a]">
+        {/* Globe image as seen in the image - represent it with a base and overlay nodes */}
+        <div className="relative w-[120%] h-[120%] -translate-y-[10%] p-[10%]">
+            <Image 
+                src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000" // A suitable dark tech globe background
+                alt="Global Network"
+                fill
+                className="object-cover opacity-5"
+            />
+            
+            {/* Superimposed interactive nodes/dots */}
+            <div ref={globeRef} className="relative w-full h-full">
+                {dots.map((dot, index) => (
+                    <div 
+                        key={index}
+                        className="absolute bg-[#16b5ec] rounded-full opacity-30 shadow-[0_0_10px_rgba(22,181,236,0.3)] transition-all duration-100 ease-linear"
+                        style={{
+                            left: `${dot.x}%`,
+                            top: `${dot.y}%`,
+                            width: `${dot.size}px`,
+                            height: `${dot.size}px`,
+                        }}
+                    />
+                ))}
+            </div>
+            
+            {/* Background elements like the airplane and pin from image */}
+            <div className="absolute top-[30%] left-[20%] text-gray-500 opacity-20">
+                <PlaneTakeoff size={48} />
+            </div>
+            <div className="absolute top-[70%] left-[60%] text-gray-500 opacity-20">
+                <MapPin size={64} />
+            </div>
+        </div>
+    </div>
+  );
+}
+
+// -- COMPONENT 3: FEATURE CARD (Bento Grid Item) --
+// Dynamic component that handles visual replication and specific hover jiggles.
+interface FeatureCardProps {
+    title: string;
+    diagram: React.ReactNode;
+    content?: React.ReactNode;
+    href: string;
+    iconHoverAnimation?: 'shake' | 'rotate' | 'jiggle';
+    gridArea?: string;
+    Icon: React.ElementType; // Icon passed as component
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, diagram, content, href, Icon, iconHoverAnimation = 'rotate', gridArea }) => {
+    const reducedMotion = useReducedMotion();
+
+    const hoverVariants = {
+        shake: { rotate: [0, 10, -10, 0], transition: { duration: 0.3 } },
+        rotate: { rotate: [0, 45, -45, 0], transition: { duration: 0.3 } },
+        jiggle: { scale: [1, 1.1, 0.9, 1], transition: { duration: 0.3 } },
+    };
+
+    return (
+        <motion.div 
+            className="group relative p-8 rounded-[3rem] bg-[#111216]/50 backdrop-blur-xl border border-gray-800 shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] overflow-hidden"
+            style={{ gridArea }}
+            whileHover={!reducedMotion ? { scale: 1.03, } : {}}
+        >
+            {/* Glowing neon border overlay, visible on hover */}
+            <motion.div 
+                className="absolute inset-0 border-2 border-transparent rounded-[3rem] shadow-[0_0_20px_4px_rgba(22,181,236,0)] z-10"
+                whileHover={!reducedMotion ? {
+                    borderColor: '#16b5ec',
+                    boxShadow: '0 0 25px 8px rgba(22,181,236,0.6)',
+                    transition: { duration: 0.2 }
+                } : { borderColor: '#16b5ec' }}
+            />
+
+            <Link href={href} className="absolute inset-0 z-20"></Link>
+
+            {/* Title and Icon shake logic */}
+            <div className="relative z-30 flex items-center justify-between gap-4 mb-6">
+                <h3 className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">{title}</h3>
+                <motion.div 
+                    className="p-3 bg-gray-800/60 rounded-full text-[#3478f2]"
+                    whileHover={!reducedMotion && iconHoverAnimation ? hoverVariants[iconHoverAnimation] : {}}
+                >
+                    <Icon size={20} />
+                </motion.div>
+            </div>
+
+            {/* Replicated diagram content */}
+            <div className="relative z-30 space-y-4 text-sm text-gray-400 font-medium leading-relaxed">
+                <div className="w-full aspect-[2/1] rounded-2xl bg-[#0a0b0d] p-4 flex items-center justify-center border border-gray-800/50">
+                    {diagram}
+                </div>
+                {content}
+            </div>
+            
+            {/* Card corner link arrows from image */}
+            <div className="absolute bottom-8 right-8 z-30 text-gray-700 opacity-50 group-hover:text-[#3478f2] group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowRight size={24} />
+            </div>
+        </motion.div>
+    );
+};
+
+
+// -- PAGE: HOMEPAGE (`app/page.tsx`) --
+export default function HomePage() {
+  const reducedMotion = useReducedMotion();
+
+  const pageTransitionVariants = {
+    initial: { opacity: 0, y: 50 },
+    animate: { 
+        opacity: 1, 
+        y: 0, 
+        transition: { delay: 0.4, staggerChildren: 0.1, delayChildren: 0.6 } 
+    }
+  };
+
+  // Content for features based on user input
+  const features = [
+    {
+      title: "Unified Global Network",
+      href: "/platform/network",
+      Icon: Target,
+      iconHoverAnimation: 'shake' as const,
+      gridArea: 'network',
+      diagram: (
+          // Simplified replication of network diagram
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec]/70 gap-3">
+              <Zap size={32}/>
+              <ArrowRight size={24}/>
+              <Globe size={48} className="text-[#3478f2]"/>
+              <div className="text-gray-600 text-xs text-center font-bold tracking-wider">SECURE DATA FLOWS</div>
+          </div>
+      )
+    },
+    {
+      title: "Secure Payments",
+      href: "/platform/payments",
+      Icon: DollarSign,
+      iconHoverAnimation: 'jiggle' as const,
+      gridArea: 'payments',
+      diagram: (
+           // Money diagram replication
+           <div className="w-full h-full flex items-center justify-center text-[#16b5ec] gap-4">
+              <div className="w-16 h-16 rounded-full bg-[#16b5ec]/10 border border-[#16b5ec]/30 flex items-center justify-center">
+                <DollarSign size={36}/>
+              </div>
+              <ArrowRight size={24} className="text-gray-700"/>
+              <div className="w-16 h-16 rounded-full bg-[#3478f2]/10 border border-[#3478f2]/30 flex items-center justify-center text-[#3478f2]">
+                <ShieldCheck size={36}/>
+              </div>
+          </div>
+      )
+    },
+    {
+      title: "Automated Compliance",
+      href: "/platform/automated-compliance",
+      Icon: ShieldCheck,
+      iconHoverAnimation: 'rotate' as const,
+      gridArea: 'compliance', // Card is column tall
+      diagram: (
+          // Compliance list diagram as seen in the image text
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec] gap-3">
+              <Server size={40}/>
+              <div className="text-gray-600 text-xs font-bold tracking-wider">AI ACT AUDIT LOG</div>
+              <div className="flex gap-2">
+                <Database size={24}/>```tsx
+"use client";
+
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { motion, AnimatePresence, useAnimation, useReducedMotion } from 'framer-motion';
+import { 
+  ArrowRight, 
+  Settings, 
+  MapPin, 
+  DollarSign, 
+  Target, 
+  ShieldCheck, 
+  PlaneTakeoff, 
+  Zap, 
+  Server, 
+  Database,
+  BarChart3,
+  Scale,
+  Globe
+} from 'lucide-react';
+
+/**
+ * A professional frontend engineer always abstracts complex components. 
+ * Due to the format, I am inlining them all in one file, but this would be a project
+ * structure with component files in app/components/.
+ */
+
+// -- COMPONENT 1: HEADER --
+// Replicates the top menu from the image, but adds user-specified links.
+const Header: React.FC = () => {
+  const reducedMotion = useReducedMotion();
+
+  // Universal hover variants for navigation elements
+  const navItemVariants = {
+    initial: { scale: 1 },
+    hover: { 
+      scale: 1.05,
+      transition: { type: 'spring', stiffness: 400, damping: 10 }
+    }
+  };
+
+  const menuLinks = [
+    { name: "HOME", href: "/" },
+    { name: "PLATFORM", href: "/platform" },
+    { name: "SOLUTIONS", href: "/solutions" },
+    { name: "RESOURCES", href: "/resources" },
+    { name: "ABOUT US", href: "/about-us" },
+    { name: "CONTACT", href: "/contact" }
+  ];
+
+  return (
+    <motion.header 
+      className="fixed top-0 left-0 w-full z-50 bg-[#06070a]/90 backdrop-blur-sm border-b border-gray-800"
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
+    >
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between p-6 px-12">
+        {/* Brand Logo - Giving it a glowing text effect as seen in other elements */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <motion.div 
+            className="w-10 h-10 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(22,181,236,0.3)]"
+            whileHover={!reducedMotion ? { rotate: [0, 10, -10, 0], scale: 1.1 } : {}}
+          >
+            <ShieldCheck size={24} className="text-white" />
+          </motion.div>
+          <span className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">
+            Compliance<span className="text-gray-400 font-medium">Guard</span><span className="text-[#3478f2]">AI</span>
+          </span>
+        </Link>
+        
+        {/* User-specified Top Menu */}
+        <nav className="hidden md:flex gap-8 text-sm font-semibold tracking-wider text-gray-400">
+          {menuLinks.map(link => (
+            <motion.div 
+              key={link.name} 
+              variants={navItemVariants} 
+              whileHover="hover" 
+              className="relative p-2"
+            >
+              <Link href={link.href} className="hover:text-white transition-colors">{link.name}</Link>
+              {/* Neon border glow effect on hover */}
+              <motion.div 
+                className="absolute inset-0 border border-transparent rounded-lg shadow-[0_0_10px_rgba(22,181,236,0)]"
+                whileHover={!reducedMotion ? {
+                  borderColor: '#16b5ec',
+                  boxShadow: '0 0 15px 4px rgba(22,181,236,0.5)',
+                  transition: { duration: 0.2 }
+                } : {}}
+              />
+            </motion.div>
+          ))}
+        </nav>
+
+        {/* Primary CTA button with universal hover glow and icon jiggle */}
+        <motion.button 
+          className="group relative px-8 py-3 bg-gradient-to-tr from-[#16b5ec] to-[#3478f2] text-white rounded-full text-sm font-bold flex items-center gap-2"
+          whileHover={!reducedMotion ? { 
+            scale: 1.05, 
+            boxShadow: '0 0 20px 8px rgba(52,120,242,0.6)',
+          } : { scale: 1.05 }}
+        >
+          <span>Get Started</span>
+          <motion.div whileHover={!reducedMotion ? { rotate: [0, 15, -15, 0], scale: 1.1 } : {}}>
+             <Settings size={18} className="text-white" />
+          </motion.div>
+        </motion.button>
+      </div>
+    </motion.header>
+  );
+}
+
+// -- COMPONENT 2: INTERACTIVE GLOBE BACKGROUND --
+// Replicates the global network, making dots "ping" brighter based on mouse proximity.
+const GlobeBackground: React.FC = () => {
+  const globeRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  // Defines a grid of points over the globe image to make them interactive.
+  const numDots = 100;
+  const dots = Array.from({ length: numDots }).map((_, index) => ({
+    x: (index % 10) * 10 + 5, // grid coords 0-100
+    y: Math.floor(index / 10) * 10 + 5,
+    size: 4 + (Math.random() * 4), // varied base sizes
+  }));
+
+  const controls = useAnimation();
+
+  useEffect(() => {
+    const globeDiv = globeRef.current;
+    if (!globeDiv || reducedMotion) return;
+
+    // Standard Framer Motion animate function is difficult to coordinate across so many components
+    // for a high-performance interactive effect. We use direct DOM manipulation for maximum speed
+    // and smoothness for a professional engineering touch.
+    const dotsDivs = Array.from(globeDiv.children) as HTMLDivElement[];
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = globeDiv.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
+
+      dotsDivs.forEach((dot, index) => {
+        const dotData = dots[index];
+        const dotX = (rect.width * dotData.x / 100);
+        const dotY = (rect.height * dotData.y / 100);
+
+        const dx = mouseX - dotX;
+        const dy = mouseY - dotY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        // Calculate a brightness/scale effect based on proximity to mouse
+        const proximity = Math.max(0, 150 - dist) / 150; // max effect within 150px
+        const scaleEffect = 1 + (proximity * 2); // max 3x base size
+        const glowOpacity = 0.2 + (proximity * 0.8); // max fully opaque glow
+
+        dot.style.transform = `scale(${scaleEffect})`;
+        dot.style.boxShadow = `0 0 15px ${10 * proximity}px rgba(22,181,236,${glowOpacity})`;
+        dot.style.opacity = `${glowOpacity}`;
+      });
+    };
+
+    const handleMouseLeave = () => {
+        dotsDivs.forEach((dot, index) => {
+            const dotData = dots[index];
+            dot.style.transform = `scale(1)`;
+            dot.style.boxShadow = `0 0 5px rgba(22,181,236,0.3)`;
+            dot.style.opacity = `0.3`;
+          });
+    };
+
+    globeDiv.addEventListener('mousemove', handleMouseMove);
+    globeDiv.addEventListener('mouseleave', handleMouseLeave);
+    
+    return () => {
+        globeDiv.removeEventListener('mousemove', handleMouseMove);
+        globeDiv.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [dots, reducedMotion]);
+
+  return (
+    <div className="absolute inset-0 w-full h-full overflow-hidden flex items-center justify-center -z-10 bg-[#06070a]">
+        {/* Globe image as seen in the image - represent it with a base and overlay nodes */}
+        <div className="relative w-[120%] h-[120%] -translate-y-[10%] p-[10%]">
+            <Image 
+                src="[https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000](https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2000)" // A suitable dark tech globe background
+                alt="Global Network"
+                fill
+                className="object-cover opacity-5"
+            />
+            
+            {/* Superimposed interactive nodes/dots */}
+            <div ref={globeRef} className="relative w-full h-full">
+                {dots.map((dot, index) => (
+                    <div 
+                        key={index}
+                        className="absolute bg-[#16b5ec] rounded-full opacity-30 shadow-[0_0_10px_rgba(22,181,236,0.3)] transition-all duration-100 ease-linear"
+                        style={{
+                            left: `${dot.x}%`,
+                            top: `${dot.y}%`,
+                            width: `${dot.size}px`,
+                            height: `${dot.size}px`,
+                        }}
+                    />
+                ))}
+            </div>
+            
+            {/* Background elements like the airplane and pin from image */}
+            <div className="absolute top-[30%] left-[20%] text-gray-500 opacity-20">
+                <PlaneTakeoff size={48} />
+            </div>
+            <div className="absolute top-[70%] left-[60%] text-gray-500 opacity-20">
+                <MapPin size={64} />
+            </div>
+        </div>
+    </div>
+  );
+}
+
+// -- COMPONENT 3: FEATURE CARD (Bento Grid Item) --
+// Dynamic component that handles visual replication and specific hover jiggles.
+interface FeatureCardProps {
+    title: string;
+    diagram: React.ReactNode;
+    content?: React.ReactNode;
+    href: string;
+    iconHoverAnimation?: 'shake' | 'rotate' | 'jiggle';
+    gridArea?: string;
+    Icon: React.ElementType; // Icon passed as component
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, diagram, content, href, Icon, iconHoverAnimation = 'rotate', gridArea }) => {
+    const reducedMotion = useReducedMotion();
+
+    const hoverVariants = {
+        shake: { rotate: [0, 10, -10, 0], transition: { duration: 0.3 } },
+        rotate: { rotate: [0, 45, -45, 0], transition: { duration: 0.3 } },
+        jiggle: { scale: [1, 1.1, 0.9, 1], transition: { duration: 0.3 } },
+    };
+
+    return (
+        <motion.div 
+            className="group relative p-8 rounded-[3rem] bg-[#111216]/50 backdrop-blur-xl border border-gray-800 shadow-[inset_0_2px_4px_rgba(255,255,255,0.02)] overflow-hidden"
+            style={{ gridArea }}
+            whileHover={!reducedMotion ? { scale: 1.03, } : {}}
+        >
+            {/* Glowing neon border overlay, visible on hover */}
+            <motion.div 
+                className="absolute inset-0 border-2 border-transparent rounded-[3rem] shadow-[0_0_20px_4px_rgba(22,181,236,0)] z-10"
+                whileHover={!reducedMotion ? {
+                    borderColor: '#16b5ec',
+                    boxShadow: '0 0 25px 8px rgba(22,181,236,0.6)',
+                    transition: { duration: 0.2 }
+                } : { borderColor: '#16b5ec' }}
+            />
+
+            <Link href={href} className="absolute inset-0 z-20"></Link>
+
+            {/* Title and Icon shake logic */}
+            <div className="relative z-30 flex items-center justify-between gap-4 mb-6">
+                <h3 className="font-extrabold text-2xl tracking-tighter text-white group-hover:text-[#16b5ec] transition-colors">{title}</h3>
+                <motion.div 
+                    className="p-3 bg-gray-800/60 rounded-full text-[#3478f2]"
+                    whileHover={!reducedMotion && iconHoverAnimation ? hoverVariants[iconHoverAnimation] : {}}
+                >
+                    <Icon size={20} />
+                </motion.div>
+            </div>
+
+            {/* Replicated diagram content */}
+            <div className="relative z-30 space-y-4 text-sm text-gray-400 font-medium leading-relaxed">
+                <div className="w-full aspect-[2/1] rounded-2xl bg-[#0a0b0d] p-4 flex items-center justify-center border border-gray-800/50">
+                    {diagram}
+                </div>
+                {content}
+            </div>
+            
+            {/* Card corner link arrows from image */}
+            <div className="absolute bottom-8 right-8 z-30 text-gray-700 opacity-50 group-hover:text-[#3478f2] group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <ArrowRight size={24} />
+            </div>
+        </motion.div>
+    );
+};
+
+
+// -- PAGE: HOMEPAGE (`app/page.tsx`) --
+export default function HomePage() {
+  const reducedMotion = useReducedMotion();
+
+  const pageTransitionVariants = {
+    initial: { opacity: 0, y: 50 },
+    animate: { 
+        opacity: 1, 
+        y: 0, 
+        transition: { delay: 0.4, staggerChildren: 0.1, delayChildren: 0.6 } 
+    }
+  };
+
+  // Content for features based on user input
+  const features = [
+    {
+      title: "Unified Global Network",
+      href: "/platform/network",
+      Icon: Target,
+      iconHoverAnimation: 'shake' as const,
+      gridArea: 'network',
+      diagram: (
+          // Simplified replication of network diagram
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec]/70 gap-3">
+              <Zap size={32}/>
+              <ArrowRight size={24}/>
+              <Globe size={48} className="text-[#3478f2]"/>
+              <div className="text-gray-600 text-xs text-center font-bold tracking-wider">SECURE DATA FLOWS</div>
+          </div>
+      )
+    },
+    {
+      title: "Secure Payments",
+      href: "/platform/payments",
+      Icon: DollarSign,
+      iconHoverAnimation: 'jiggle' as const,
+      gridArea: 'payments',
+      diagram: (
+           // Money diagram replication
+           <div className="w-full h-full flex items-center justify-center text-[#16b5ec] gap-4">
+              <div className="w-16 h-16 rounded-full bg-[#16b5ec]/10 border border-[#16b5ec]/30 flex items-center justify-center">
+                <DollarSign size={36}/>
+              </div>
+              <ArrowRight size={24} className="text-gray-700"/>
+              <div className="w-16 h-16 rounded-full bg-[#3478f2]/10 border border-[#3478f2]/30 flex items-center justify-center text-[#3478f2]">
+                <ShieldCheck size={36}/>
+              </div>
+          </div>
+      )
+    },
+    {
+      title: "Automated Compliance",
+      href: "/platform/automated-compliance",
+      Icon: ShieldCheck,
+      iconHoverAnimation: 'rotate' as const,
+      gridArea: 'compliance', // Card is column tall
+      diagram: (
+          // Compliance list diagram as seen in the image text
+          <div className="w-full h-full flex flex-col items-center justify-center text-[#16b5ec] gap-3">
+              <Server size={40}/>
+              <div className="text-gray-600 text-xs font-bold tracking-wider">AI ACT AUDIT LOG</div>
+              <div className="flex gap-2">
+                <Database size={24}/>
