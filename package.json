@@ -1,4 +1,4 @@
-{
+ {
   "name": "connect-global",
   "version": "0.1.0",
   "private": true,
@@ -13,8 +13,7 @@
     "react-dom": "latest",
     "framer-motion": "latest",
     "lucide-react": "latest", 
-    "@tailwindcss/postcss": 
-    "latest"
+    "@tailwindcss/postcss": "latest"
   },
   "devDependencies": {
     "tailwindcss": "latest",
